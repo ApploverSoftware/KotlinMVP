@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">KotlinMVP</string>
+    <string name="choose_photo_from_header">Choose picture from:</string>
+    <string name="choose_photo_message">Choose picture using:</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="chose_picture">Chose picture</string>
 </resources>

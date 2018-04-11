@@ -14,9 +14,6 @@ import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
-import pl.applover.amino.R
-import pl.applover.amino.getPositionedBitmap
-import pl.applover.amino.getPositionedCameraPhoto
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
