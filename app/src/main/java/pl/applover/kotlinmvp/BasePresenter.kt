@@ -4,7 +4,7 @@ package pl.applover.kotlinmvp
  * Created by sp0rk on 23.05.17.
  */
 
-abstract class BasePresenter<V : BaseFragmentMvpView> : BaseMvpPresenter<V> {
+abstract class BasePresenter<V : BaseMvpView> : BaseMvpPresenter<V> {
 
     protected var mView: V? = null
 
