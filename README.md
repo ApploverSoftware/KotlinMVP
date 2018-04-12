@@ -15,7 +15,7 @@ To use this library, add to your build.gradle:
 
 And this dependency:
 ```
-    implementation ('com.github.ApploverSoftware:KotlinMVP:1.0.3'){
+    implementation ('com.github.ApploverSoftware:KotlinMVP:1.0.4'){
         exclude group: 'com.android.support'
     }
 ```
