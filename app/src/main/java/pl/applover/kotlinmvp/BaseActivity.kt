@@ -2,12 +2,13 @@ package pl.applover.kotlinmvp
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 
 /**
  * Created by janpawlov ( ͡° ͜ʖ ͡°) on 11/04/2018.
  */
-abstract class BaseActivity<in V : BaseMvpView, P : BaseMvpPresenter<V>>: Activity(), BaseMvpView {
+abstract class BaseActivity<in V : BaseMvpView, P : BaseMvpPresenter<V>>: AppCompatActivity(), BaseMvpView {
 
     protected abstract var mPresenter: P
 
