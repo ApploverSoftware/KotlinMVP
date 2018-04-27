@@ -12,8 +12,8 @@ import android.widget.Toast
 abstract class BaseFragment<in V : BaseMvpView, P : BaseMvpPresenter<V>> : Fragment(), BaseMvpView {
 
     protected abstract var mPresenter: P
-    private var navigator: FragmentNavigator? = null
-    private lateinit var contextActivity: AppCompatActivity
+    protected var navigator: FragmentNavigator? = null
+    protected lateinit var contextActivity: AppCompatActivity
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
