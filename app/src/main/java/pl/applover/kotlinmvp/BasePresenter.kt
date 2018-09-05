@@ -6,7 +6,7 @@ package pl.applover.kotlinmvp
 
 abstract class BasePresenter<V : BaseMvpView> : BaseMvpPresenter<V> {
 
-    protected var mView: V? = null
+    var mView: V? = null
 
     override fun attachView(view: V) {
         mView = view

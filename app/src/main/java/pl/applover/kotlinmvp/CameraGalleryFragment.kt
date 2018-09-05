@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.Executors
 
 /**
  * Created by janpawlov ( ͡° ͜ʖ ͡°) on 09/03/2018.
@@ -27,9 +28,10 @@ abstract class CameraGalleryFragment<in V : BaseMvpView, P : BaseMvpPresenter<V>
     private var mCurrentPhotoUri: Uri? = null
     private var mCurrentPhotoFile: File? = null
     abstract fun processChosenImage(imageFile: File?)
+    private val mExecutor = Executors.newCachedThreadPool()
 
 
-    fun chooseCameraOrGallery(){
+    fun chooseCameraOrGallery() {
         AlertDialog.Builder(context!!)
                 .setTitle(R.string.choose_photo_from_header)
                 .setMessage(R.string.choose_photo_message)
@@ -44,6 +46,12 @@ abstract class CameraGalleryFragment<in V : BaseMvpView, P : BaseMvpPresenter<V>
                     p0.dismiss()
                     checkPermissionsAndOpenGallery()
                 }.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!mExecutor.isShutdown)
+            mExecutor.shutdown()
     }
 
     private fun checkPermissionsAndOpenGallery() {
@@ -129,9 +137,11 @@ abstract class CameraGalleryFragment<in V : BaseMvpView, P : BaseMvpPresenter<V>
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_OPEN_GALLERY && resultCode == Activity.RESULT_OK) {
-            PhotoConverterTask().execute(data)
+            mExecutor.execute(PhotoProcessor(data))
+            //PhotoConverterTask().execute(data)
         } else if (requestCode == REQUEST_OPEN_CAMERA && resultCode == Activity.RESULT_OK) {
-            CameraHandlerTask().execute(mCurrentPhotoUri)
+            mExecutor.execute(CameraProcessor())
+            //CameraHandlerTask().execute(mCurrentPhotoUri)
         }
     }
 
@@ -161,6 +171,33 @@ abstract class CameraGalleryFragment<in V : BaseMvpView, P : BaseMvpPresenter<V>
                 fos.close()
                 return file
             }
+        }
+    }
+
+    inner class PhotoProcessor(private val intent: Intent?) : Runnable {
+        override fun run() {
+            intent?.data.let {
+                val file = createTempFile(suffix = ".jpeg")
+                val bitmap = it?.getPositionedBitmap(activity!!.contentResolver)
+                val fos = FileOutputStream(file)
+                val stream = ByteArrayOutputStream()
+                bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                fos.write(stream.toByteArray())
+                fos.close()
+                processChosenImage(file)
+            }
+        }
+    }
+
+    inner class CameraProcessor : Runnable {
+        override fun run() {
+            val bitmap = mCurrentPhotoUri?.getPositionedCameraPhoto(activity!!.contentResolver)
+            val fos = FileOutputStream(mCurrentPhotoFile)
+            val stream = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            fos.write(stream.toByteArray())
+            fos.close()
+            processChosenImage(mCurrentPhotoFile)
         }
     }
 
